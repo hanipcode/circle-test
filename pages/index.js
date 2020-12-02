@@ -1,4 +1,3 @@
-import SearchPage from '../src/Views/Search';
+import SearchPage from '../src/views/Search';
 
-
-export default  SearchPage;
+export default SearchPage;

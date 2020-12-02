@@ -21,7 +21,9 @@
     "paths": {
       "#/constants/*": ["constants/*"],
       "#/views/*": ["views/*"],
+      "#/helpers/*": ["helpers/*"],
       "#/components/*": ["components/*"],
+      "#/mocks/*": ["mocks/*"],
     }
   },
   "include": [
