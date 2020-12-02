@@ -1,0 +1,15 @@
+{
+  "data": [
+    { "name": "birthday" },
+    { "name": "bien" },
+    { "name": "bit" },
+    { "name": "bisous" },
+    { "name": "bil" }
+  ],
+  "pagination": { "count": 5, "offset": 0 },
+  "meta": {
+    "status": 200,
+    "msg": "OK",
+    "response_id": "2da569e8e512bd2b9450a02c6068c394cf90cc9a"
+  }
+}
