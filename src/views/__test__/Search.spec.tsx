@@ -14,10 +14,18 @@ import autoCompleteMock from '../../mocks/autocomplete.json';
 import trendingData from '../../mocks/trending_data.json';
 import searchData from '../../mocks/search.json';
 import { useRouter } from 'next/router';
+import debounce from '../../helpers/debounce';
 
 jest.mock('next/router', () => ({
   __esModule: true,
   useRouter: jest.fn(),
+}));
+
+jest.mock('../../helpers/debounce', () => ({
+  __esModule: true,
+  default: (cb, timer) => {
+    return cb;
+  },
 }));
 
 describe('Search View', () => {
@@ -63,14 +71,43 @@ describe('Search View', () => {
     const suggestionResultsEl = await findByTestId(
       TEST_ID.SEARCH_AC_SUGGESTION
     );
-    const firstItemText = await findByText(firstItem);
+    const firstItemEl = await findByText(firstItem);
 
     expect(suggestionResultsEl).toBeVisible();
-    expect(suggestionResultsEl.children.length).toEqual(
-      autoCompleteMock.data.length
-    );
-    expect(firstItemText).toBeVisible();
+
+    expect(firstItemEl).toBeVisible();
     done();
+  });
+
+  it('query is also in the suggestion for seamless close experience', async () => {
+    const { findByText, getByTestId, findByTestId } = render(<Search />);
+    const query = 'SEARCH_TEST_1';
+    const input = getByTestId(TEST_ID.SEARCH_AC_INPUT);
+    const firstItem = autoCompleteMock.data[0].name;
+    fireEvent.change(input, {
+      target: {
+        value: query,
+      },
+    });
+    const querySuggestionEl = await findByText(query);
+    expect(querySuggestionEl).toBeInTheDocument();
+  });
+
+  it('total suggestion equal to query + suggestions', async () => {
+    const { findByText, getByTestId, findByTestId } = render(<Search />);
+    const query = 'SEARCH_TEST_1';
+    const input = getByTestId(TEST_ID.SEARCH_AC_INPUT);
+    const TOTAL_SUGGESTION = autoCompleteMock.data.length + 1;
+    fireEvent.change(input, {
+      target: {
+        value: query,
+      },
+    });
+
+    const suggestionResultsEl = await findByTestId(
+      TEST_ID.SEARCH_AC_SUGGESTION
+    );
+    expect(suggestionResultsEl.children.length).toEqual(TOTAL_SUGGESTION);
   });
 
   it('remove suggestion on empty query', async () => {
@@ -89,13 +126,10 @@ describe('Search View', () => {
     const suggestionResultsEl = await findByTestId(
       TEST_ID.SEARCH_AC_SUGGESTION
     );
-    const firstItemText = await findByText(firstItem);
+    const firstItemEl = await findByText(firstItem);
 
     expect(suggestionResultsEl).toBeVisible();
-    expect(suggestionResultsEl.children.length).toEqual(
-      autoCompleteMock.data.length
-    );
-    expect(firstItemText).toBeVisible();
+    expect(firstItemEl).toBeVisible();
 
     // empty the query
     fireEvent.change(input, {
@@ -121,10 +155,31 @@ describe('Search View', () => {
         value: query,
       },
     });
-    const firstItemText = await findByText(firstItem);
-    fireEvent.click(firstItemText);
+    const firstItemEl = await findByText(firstItem);
+    fireEvent.click(firstItemEl);
     await waitFor(() => {
       expect(queryByText(firstItem)).not.toBeInTheDocument();
+    });
+  });
+
+  it('fill the search box on suggestion click', async () => {
+    const { findByText, getByTestId, queryByText, getByText } = render(
+      <Search />
+    );
+    const query = 'SEARCH_TEST_1';
+    const input = getByTestId(TEST_ID.SEARCH_AC_INPUT);
+    const firstItem = autoCompleteMock.data[0].name;
+    fireEvent.change(input, {
+      target: {
+        value: query,
+      },
+    });
+    const firstItemEl = await findByText(firstItem);
+    act(() => {
+      fireEvent.click(firstItemEl);
+    });
+    await waitFor(() => {
+      expect((input as HTMLInputElement).value).toEqual(firstItem);
     });
   });
 
@@ -160,6 +215,7 @@ describe('Search View', () => {
     act(() => {
       fireEvent.click(firstImage);
     });
+
     expect(push).toBeCalledTimes(1);
     expect(push).toBeCalledWith(`/detail/${trendingData.data[0].id}`);
   });

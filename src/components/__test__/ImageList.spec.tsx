@@ -13,17 +13,20 @@ const mockImageList: ImageListItem[] = ImageData.map((imageData) => ({
 
 describe('ImageLIst', () => {
   it('can render coorectly', () => {
+    // @ts-ignore
     const { queryByTestId } = render(<ImageList images={mockImageList} />);
     expect(queryByTestId(TEST_ID.IMG_LIST_CONTAINER)).toBeTruthy();
   });
 
   it('render image element as much as the search result length', () => {
+    // @ts-ignore
     const { getByTestId } = render(<ImageList images={mockImageList} />);
     const imageContainer = getByTestId(TEST_ID.IMG_LIST_CONTAINER);
     expect(imageContainer.children.length).toEqual(mockImageList.length);
   });
 
   it('render the correct image', () => {
+    // @ts-ignore
     const { getByTestId } = render(<ImageList images={mockImageList} />);
     const imageContainer = getByTestId(TEST_ID.IMG_LIST_CONTAINER);
     const firstChild = imageContainer.children.item(0);

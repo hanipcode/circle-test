@@ -281,3 +281,8 @@ export interface GetImageListResponse {
   pagination: Pagination;
   meta: Meta;
 }
+
+export interface GetSingleImageResponse {
+  data: GifImageData;
+  meta: Meta;
+}

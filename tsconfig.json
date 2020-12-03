@@ -24,6 +24,7 @@
       "#/helpers/*": ["helpers/*"],
       "#/components/*": ["components/*"],
       "#/mocks/*": ["mocks/*"],
+      "#/styles/*": ["styles/*"],
     }
   },
   "include": [
