@@ -25,6 +25,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
+*note*: to be able to deploy you need to provide .env.local containing API_KEY and BASE_URL
+
 ## Run Test
 To run the integration and unit test:
 ```bash
